@@ -2,8 +2,9 @@ import tkinter as tk
 from graph import Graph
 
 class MetroTravelUI:
-    def __init__(self, graph):
+    def __init__(self, graph, airport_codes):
         self.graph = graph
+        self.airport_codes = airport_codes
         self.root = tk.Tk()
         self.root.title("Metro Travel")
 
@@ -35,8 +36,16 @@ class MetroTravelUI:
         destination = self.destination_entry.get().strip().upper()
         has_visa = self.visa_var.get()
 
-        cost, path = self.graph.find_route(origin, destination, has_visa)
-        if cost is None:
+        if origin not in self.airport_codes or destination not in self.airport_codes:
+            self.result_label.config(text="Origen o destino no válido.")
+            return
+
+        src_idx = self.airport_codes.index(origin)
+        dest_idx = self.airport_codes.index(destination)
+
+        cost, path = self.graph.find_route(src_idx, dest_idx, has_visa)
+        if cost == float('inf'):
             self.result_label.config(text="No se encontró una ruta válida.")
         else:
+            path = [self.airport_codes[i] for i in path]
             self.result_label.config(text=f"Ruta: {' -> '.join(path)}\nCosto: ${cost}")

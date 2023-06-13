@@ -1,8 +1,11 @@
 from ui import MetroTravelUI
 from graph import Graph
 
-def create_graph():
-    graph = Graph()
+def main():
+    airport_codes = ["CCS", "AUA", "CUR", "BON", "SDQ", "SXM", "SBH", "POS", "BGI", "PTP", "FDF"]
+    airport_indices = {code: i for i, code in enumerate(airport_codes)}
+
+    graph = Graph(len(airport_codes))
 
     edges = [
         ("CCS", "AUA", 40),
@@ -28,18 +31,13 @@ def create_graph():
     ]
 
     for src, dest, cost in edges:
-        graph.add_edge(src, dest, cost)
-        graph.add_edge(dest, src, cost)
+        graph.add_edge(airport_indices[src], airport_indices[dest], cost)
 
     visa_required = ["AUA", "BON", "CUR", "SXM", "SDQ"]
     for airport in visa_required:
-        graph.add_visa_required(airport)
+        graph.add_visa_required(airport_indices[airport])
 
-    return graph
-
-def main():
-    graph = create_graph()
-    app = MetroTravelUI(graph)
+    app = MetroTravelUI(graph, airport_codes)
     app.run()
 
 if __name__ == "__main__":
